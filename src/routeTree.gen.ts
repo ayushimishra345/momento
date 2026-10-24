@@ -10,33 +10,128 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as CartRouteImport } from './routes/cart'
+import { Route as CheckoutRouteImport } from './routes/checkout'
+import { Route as FindMyGiftRouteImport } from './routes/find-my-gift'
+import { Route as MysteryRouteImport } from './routes/mystery'
+import { Route as PersonaliseRouteImport } from './routes/personalise'
+import { Route as ShopRouteImport } from './routes/shop'
+import { Route as ProductIdRouteImport } from './routes/product.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CartRoute = CartRouteImport.update({
+  id: '/cart',
+  path: '/cart',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CheckoutRoute = CheckoutRouteImport.update({
+  id: '/checkout',
+  path: '/checkout',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FindMyGiftRoute = FindMyGiftRouteImport.update({
+  id: '/find-my-gift',
+  path: '/find-my-gift',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MysteryRoute = MysteryRouteImport.update({
+  id: '/mystery',
+  path: '/mystery',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PersonaliseRoute = PersonaliseRouteImport.update({
+  id: '/personalise',
+  path: '/personalise',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ShopRoute = ShopRouteImport.update({
+  id: '/shop',
+  path: '/shop',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProductIdRoute = ProductIdRouteImport.update({
+  id: '/product/$id',
+  path: '/product/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/cart': typeof CartRoute
+  '/checkout': typeof CheckoutRoute
+  '/find-my-gift': typeof FindMyGiftRoute
+  '/mystery': typeof MysteryRoute
+  '/personalise': typeof PersonaliseRoute
+  '/shop': typeof ShopRoute
+  '/product/$id': typeof ProductIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/cart': typeof CartRoute
+  '/checkout': typeof CheckoutRoute
+  '/find-my-gift': typeof FindMyGiftRoute
+  '/mystery': typeof MysteryRoute
+  '/personalise': typeof PersonaliseRoute
+  '/shop': typeof ShopRoute
+  '/product/$id': typeof ProductIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/cart': typeof CartRoute
+  '/checkout': typeof CheckoutRoute
+  '/find-my-gift': typeof FindMyGiftRoute
+  '/mystery': typeof MysteryRoute
+  '/personalise': typeof PersonaliseRoute
+  '/shop': typeof ShopRoute
+  '/product/$id': typeof ProductIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/cart'
+    | '/checkout'
+    | '/find-my-gift'
+    | '/mystery'
+    | '/personalise'
+    | '/shop'
+    | '/product/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/cart'
+    | '/checkout'
+    | '/find-my-gift'
+    | '/mystery'
+    | '/personalise'
+    | '/shop'
+    | '/product/$id'
+  id:
+    | '__root__'
+    | '/'
+    | '/cart'
+    | '/checkout'
+    | '/find-my-gift'
+    | '/mystery'
+    | '/personalise'
+    | '/shop'
+    | '/product/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CartRoute: typeof CartRoute
+  CheckoutRoute: typeof CheckoutRoute
+  FindMyGiftRoute: typeof FindMyGiftRoute
+  MysteryRoute: typeof MysteryRoute
+  PersonaliseRoute: typeof PersonaliseRoute
+  ShopRoute: typeof ShopRoute
+  ProductIdRoute: typeof ProductIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +143,67 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/cart': {
+      id: '/cart'
+      path: '/cart'
+      fullPath: '/cart'
+      preLoaderRoute: typeof CartRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/checkout': {
+      id: '/checkout'
+      path: '/checkout'
+      fullPath: '/checkout'
+      preLoaderRoute: typeof CheckoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/find-my-gift': {
+      id: '/find-my-gift'
+      path: '/find-my-gift'
+      fullPath: '/find-my-gift'
+      preLoaderRoute: typeof FindMyGiftRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mystery': {
+      id: '/mystery'
+      path: '/mystery'
+      fullPath: '/mystery'
+      preLoaderRoute: typeof MysteryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/personalise': {
+      id: '/personalise'
+      path: '/personalise'
+      fullPath: '/personalise'
+      preLoaderRoute: typeof PersonaliseRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/shop': {
+      id: '/shop'
+      path: '/shop'
+      fullPath: '/shop'
+      preLoaderRoute: typeof ShopRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/product/$id': {
+      id: '/product/$id'
+      path: '/product/$id'
+      fullPath: '/product/$id'
+      preLoaderRoute: typeof ProductIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CartRoute: CartRoute,
+  CheckoutRoute: CheckoutRoute,
+  FindMyGiftRoute: FindMyGiftRoute,
+  MysteryRoute: MysteryRoute,
+  PersonaliseRoute: PersonaliseRoute,
+  ShopRoute: ShopRoute,
+  ProductIdRoute: ProductIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
