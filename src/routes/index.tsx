@@ -42,7 +42,7 @@ function Home() {
             </Link>
           </div>
           <div className="relative">
-            <img src={hero} alt="A gift wrapped in ivory paper with a berry ribbon and handwritten note" width={1280} height={1280} className="aspect-[4/5] w-full rounded-[2rem] object-cover shadow-lift" />
+            <img src={hero} alt="A gift wrapped in ivory paper with a berry ribbon and handwritten note" width={1280} height={1280} className="aspect-[4/5] w-full rounded-3xl object-cover shadow-soft" />
             <div className="absolute -bottom-5 left-5 rounded-2xl bg-card px-5 py-4 shadow-soft">
               <p className="font-display text-lg italic">“For you.”</p>
               <p className="text-xs text-muted-foreground">Handwritten notes, on every order</p>
@@ -66,7 +66,7 @@ function Home() {
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {FEELINGS.map(([say, feel], i) => (
               <Link key={say} to="/shop" search={{ feeling: feel }}
-                className={`group rounded-2xl p-7 transition hover:-translate-y-1 hover:shadow-lift ${i % 3 === 1 ? "bg-primary text-primary-foreground" : i % 3 === 2 ? "bg-accent" : "bg-secondary"}`}>
+                className={`group rounded-2xl p-7 transition hover:-translate-y-0.5 ${i % 3 === 1 ? "bg-primary text-primary-foreground" : i % 3 === 2 ? "bg-accent" : "bg-secondary"}`}>
                 <p className="font-display text-2xl italic">“{say}”</p>
                 <p className="mt-6 text-sm font-semibold opacity-80 group-hover:underline">See gifts →</p>
               </Link>
@@ -86,7 +86,7 @@ function Home() {
           </div>
         </section>
 
-        <section className="grid items-center gap-10 overflow-hidden rounded-[2rem] bg-card md:grid-cols-2">
+        <section className="grid items-center gap-10 overflow-hidden rounded-3xl bg-card md:grid-cols-2">
           <img src={photosImg} alt="Polaroid photos on twine with fairy lights" loading="lazy" width={816} height={816} className="h-full w-full object-cover" />
           <div className="p-8 md:p-12">
             <p className="eyebrow">Personalised gifts</p>
@@ -96,7 +96,7 @@ function Home() {
           </div>
         </section>
 
-        <section className="grid items-center gap-10 overflow-hidden rounded-[2rem] bg-primary text-primary-foreground md:grid-cols-[1.1fr_1fr]">
+        <section className="grid items-center gap-10 overflow-hidden rounded-3xl bg-primary text-primary-foreground md:grid-cols-[1.1fr_1fr]">
           <div className="order-2 p-8 md:order-1 md:p-12">
             <p className="eyebrow !text-secondary">Mystery gifts</p>
             <h2 className="mt-3 text-4xl">Pick the vibe. We'll keep the secret.</h2>
@@ -118,7 +118,7 @@ function Home() {
           </div>
         </section>
 
-        <section className="rounded-[2rem] bg-accent p-8 md:p-12">
+        <section className="rounded-3xl bg-accent p-8 md:p-12">
           <div className="grid gap-8 md:grid-cols-[1.2fr_1fr] md:items-center">
             <div>
               <p className="eyebrow">Local gifting</p>

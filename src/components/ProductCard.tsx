@@ -8,7 +8,7 @@ export function ProductCard({ p }: { p: Product }) {
   const { add, toggleWish, wishlist } = useStore();
   const wished = wishlist.includes(p.id);
   return (
-    <article className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-soft transition hover:-translate-y-1 hover:shadow-lift">
+    <article className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-soft transition hover:-translate-y-1 hover:shadow-soft">
       <div className="relative aspect-square overflow-hidden bg-muted">
         <Link to="/product/$id" params={{ id: p.id }} aria-label={p.name}>
           <img src={p.image} alt={p.name} loading="lazy" width={816} height={816} className="h-full w-full object-cover transition duration-700 group-hover:scale-105" />

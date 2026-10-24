@@ -32,7 +32,7 @@ function Personalise() {
           ))}
         </div>
         <h2 className="mt-10 text-2xl">2. Make it theirs</h2>
-        <div className="mt-6 rounded-[2rem] bg-card p-6 sm:p-10">
+        <div className="mt-6 rounded-3xl bg-card p-6 sm:p-10">
           <Personaliser key={p.id} photo={p.photoUpload} onSubmit={(v) => add(p.id, v)} cta={`Add ${p.name} — ${inr(p.price)}`} />
         </div>
       </div>

@@ -97,9 +97,9 @@
   --sidebar-ring: oklch(0.38 0.1 5);
   --ink: oklch(0.28 0.015 45);
   --ink-foreground: oklch(0.959 0.014 67);
-  --shadow-soft: 0 18px 40px -24px color-mix(in oklab, var(--ink) 35%, transparent);
-  --shadow-lift: 0 28px 60px -28px color-mix(in oklab, var(--primary) 45%, transparent);
-  --gradient-blush: linear-gradient(160deg, var(--background) 0%, color-mix(in oklab, var(--secondary) 55%, var(--background)) 100%);
+  --shadow-soft: 0 1px 2px color-mix(in oklab, var(--ink) 6%, transparent), 0 8px 24px -16px color-mix(in oklab, var(--ink) 18%, transparent);
+  --shadow-lift: 0 2px 4px color-mix(in oklab, var(--ink) 6%, transparent), 0 20px 40px -24px color-mix(in oklab, var(--primary) 30%, transparent);
+  --gradient-blush: none;
 }
 
 @theme inline {
@@ -107,11 +107,14 @@
   --font-sans: "Manrope", system-ui, sans-serif;
   --color-ink: var(--ink);
   --color-ink-foreground: var(--ink-foreground);
-  --shadow-soft: var(--shadow-soft);
-  --shadow-lift: var(--shadow-lift);
+  --shadow-soft: 0 1px 2px color-mix(in oklab, var(--ink) 6%, transparent), 0 8px 24px -16px color-mix(in oklab, var(--ink) 18%, transparent);
+  --shadow-lift: 0 2px 4px color-mix(in oklab, var(--ink) 6%, transparent), 0 20px 40px -24px color-mix(in oklab, var(--primary) 30%, transparent);
 }
 
-@utility bg-blush { background-image: var(--gradient-blush); }
+@utility bg-blush { background-color: color-mix(in oklab, var(--secondary) 35%, var(--background)); }
+@utility marquee { animation: marquee 40s linear infinite; }
+@keyframes marquee { to { transform: translateX(-50%) } }
+@media (prefers-reduced-motion: reduce) { .marquee, .animate-shake, .animate-reveal, .animate-fade-up { animation: none } }
 @utility eyebrow { font-size: 0.72rem; letter-spacing: 0.22em; text-transform: uppercase; font-weight: 600; color: var(--primary); }
 
 @keyframes reveal-pop { 0% { transform: scale(.6) rotate(-8deg); opacity: 0 } 70% { transform: scale(1.05) rotate(1deg); opacity: 1 } 100% { transform: scale(1) } }
