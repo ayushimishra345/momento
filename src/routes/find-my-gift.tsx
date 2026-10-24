@@ -25,6 +25,7 @@ function Finder() {
 
   const steps = [
     { title: "Who is the gift for?", key: "recipient", opts: RECIPIENTS },
+    { title: "How close are you two?", key: "closeness", opts: ["Just getting close", "Close", "Inseparable"] as const, optional: true },
     { title: "What's the occasion?", key: "occasion", opts: OCCASIONS },
     { title: "What do you want them to feel?", key: "feeling", opts: FEELINGS },
     { title: "What are they into?", key: "interests", opts: INTERESTS, multi: true, optional: true },
@@ -76,38 +77,49 @@ function Finder() {
             )}
           </div>
         ) : (
-          <Results a={a} message={message} reset={() => { setA({ interests: [] }); setStep(0); }} back={() => setStep(total - 1)} />
+          <Results a={a} message={message} reset={() => { setA({ interests: [] }); setMessage(""); setStep(0); }} back={() => setStep(total - 1)}
+            summary={steps.map((st, i) => ({ i, title: st.title, v: st.key === "interests" ? a.interests.join(", ") : st.key === "message" ? message : value(st.key) })).filter((x) => x.v)}
+            edit={setStep} />
         )}
       </div>
     </div>
   );
 }
 
-function Results({ a, message, reset, back }: { a: QuizAnswers; message: string; reset: () => void; back: () => void }) {
+function Results({ a, message, reset, back, summary, edit }: { a: QuizAnswers; message: string; reset: () => void; back: () => void; summary: { i: number; title: string; v?: string }[]; edit: (i: number) => void }) {
   const picks = recommend(a);
   const { add } = useStore();
   return (
     <div className="mt-10">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="text-4xl">Three gifts that feel right</h1>
-          <p className="mt-2 text-muted-foreground">Matched by simple, transparent rules on our sample catalogue — within your budget.</p>
+          <p className="eyebrow">Your gift shortlist</p>
+          <h1 className="mt-3 text-4xl leading-tight sm:text-5xl">{a.feeling ? <>Here's how to make {a.recipient ? `your ${a.recipient.toLowerCase()}` : "them"} feel <em className="text-primary">{a.feeling.toLowerCase()}</em>.</> : "Three gifts that feel right."}</h1>
+          <p className="mt-3 max-w-xl text-muted-foreground">Matched with simple, open rules against our sample catalogue. Nothing here goes over your budget.</p>
         </div>
         <div className="flex gap-2">
           <button onClick={back} className="rounded-full border border-border bg-card px-4 py-2 text-sm font-semibold">Back</button>
           <button onClick={reset} className="inline-flex items-center gap-1 rounded-full border border-border bg-card px-4 py-2 text-sm font-semibold"><RotateCcw className="size-4" /> Start over</button>
         </div>
       </div>
+      <div className="mt-6 flex flex-wrap gap-2" aria-label="Your answers">
+        {summary.map((x) => (
+          <button key={x.i} onClick={() => edit(x.i)} title={`Change: ${x.title}`} className="rounded-full border border-border bg-card px-3 py-1.5 text-xs font-medium transition hover:border-primary">
+            <span className="line-clamp-1 max-w-48">{x.v}</span>
+          </button>
+        ))}
+        <span className="self-center text-xs text-muted-foreground">Tap an answer to change it</span>
+      </div>
       {picks.length === 0 ? (
         <div className="mt-8 rounded-2xl border border-dashed border-border bg-card p-10 text-center">
-          <p className="font-display text-2xl">No sample gifts in that budget yet</p>
+          <p className="font-display text-2xl">We couldn't find a sample gift that fits all of that</p>
           <p className="mt-2 text-muted-foreground">Try a different budget, or browse everything.</p>
           <Link to="/shop" className="mt-6 inline-block rounded-full bg-primary px-6 py-3 font-semibold text-primary-foreground">Browse all gifts</Link>
         </div>
       ) : (
         <div className="mt-8 grid gap-5 md:grid-cols-3">
           {picks.map(({ label, product: p, reasons }, i) => (
-            <article key={p.id} className="animate-fade-up flex flex-col overflow-hidden rounded-2xl bg-card shadow-soft" style={{ animationDelay: `${i * 120}ms` }}>
+            <article key={p.id} className={cn("animate-fade-up flex flex-col overflow-hidden rounded-2xl border bg-card", i === 1 ? "border-primary md:-translate-y-3" : "border-border")} style={{ animationDelay: `${i * 120}ms` }}>
               <img src={p.image} alt={p.name} loading="lazy" width={816} height={816} className="aspect-[4/3] w-full object-cover" />
               <div className="flex flex-1 flex-col p-5">
                 <p className="eyebrow">{label}</p>
