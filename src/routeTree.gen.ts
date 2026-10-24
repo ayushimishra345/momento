@@ -10,17 +10,29 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AboutRouteImport } from './routes/about'
 import { Route as CartRouteImport } from './routes/cart'
 import { Route as CheckoutRouteImport } from './routes/checkout'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as DeliveryRouteImport } from './routes/delivery'
+import { Route as FaqsRouteImport } from './routes/faqs'
 import { Route as FindMyGiftRouteImport } from './routes/find-my-gift'
 import { Route as MysteryRouteImport } from './routes/mystery'
+import { Route as OccasionsRouteImport } from './routes/occasions'
 import { Route as PersonaliseRouteImport } from './routes/personalise'
+import { Route as RemindersRouteImport } from './routes/reminders'
 import { Route as ShopRouteImport } from './routes/shop'
+import { Route as WishlistRouteImport } from './routes/wishlist'
 import { Route as ProductIdRouteImport } from './routes/product.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CartRoute = CartRouteImport.update({
@@ -33,6 +45,21 @@ const CheckoutRoute = CheckoutRouteImport.update({
   path: '/checkout',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DeliveryRoute = DeliveryRouteImport.update({
+  id: '/delivery',
+  path: '/delivery',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FaqsRoute = FaqsRouteImport.update({
+  id: '/faqs',
+  path: '/faqs',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const FindMyGiftRoute = FindMyGiftRouteImport.update({
   id: '/find-my-gift',
   path: '/find-my-gift',
@@ -43,14 +70,29 @@ const MysteryRoute = MysteryRouteImport.update({
   path: '/mystery',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OccasionsRoute = OccasionsRouteImport.update({
+  id: '/occasions',
+  path: '/occasions',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PersonaliseRoute = PersonaliseRouteImport.update({
   id: '/personalise',
   path: '/personalise',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RemindersRoute = RemindersRouteImport.update({
+  id: '/reminders',
+  path: '/reminders',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ShopRoute = ShopRouteImport.update({
   id: '/shop',
   path: '/shop',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WishlistRoute = WishlistRouteImport.update({
+  id: '/wishlist',
+  path: '/wishlist',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProductIdRoute = ProductIdRouteImport.update({
@@ -61,76 +103,125 @@ const ProductIdRoute = ProductIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/cart': typeof CartRoute
   '/checkout': typeof CheckoutRoute
+  '/contact': typeof ContactRoute
+  '/delivery': typeof DeliveryRoute
+  '/faqs': typeof FaqsRoute
   '/find-my-gift': typeof FindMyGiftRoute
   '/mystery': typeof MysteryRoute
+  '/occasions': typeof OccasionsRoute
   '/personalise': typeof PersonaliseRoute
+  '/reminders': typeof RemindersRoute
   '/shop': typeof ShopRoute
+  '/wishlist': typeof WishlistRoute
   '/product/$id': typeof ProductIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/cart': typeof CartRoute
   '/checkout': typeof CheckoutRoute
+  '/contact': typeof ContactRoute
+  '/delivery': typeof DeliveryRoute
+  '/faqs': typeof FaqsRoute
   '/find-my-gift': typeof FindMyGiftRoute
   '/mystery': typeof MysteryRoute
+  '/occasions': typeof OccasionsRoute
   '/personalise': typeof PersonaliseRoute
+  '/reminders': typeof RemindersRoute
   '/shop': typeof ShopRoute
+  '/wishlist': typeof WishlistRoute
   '/product/$id': typeof ProductIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
   '/cart': typeof CartRoute
   '/checkout': typeof CheckoutRoute
+  '/contact': typeof ContactRoute
+  '/delivery': typeof DeliveryRoute
+  '/faqs': typeof FaqsRoute
   '/find-my-gift': typeof FindMyGiftRoute
   '/mystery': typeof MysteryRoute
+  '/occasions': typeof OccasionsRoute
   '/personalise': typeof PersonaliseRoute
+  '/reminders': typeof RemindersRoute
   '/shop': typeof ShopRoute
+  '/wishlist': typeof WishlistRoute
   '/product/$id': typeof ProductIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/about'
     | '/cart'
     | '/checkout'
+    | '/contact'
+    | '/delivery'
+    | '/faqs'
     | '/find-my-gift'
     | '/mystery'
+    | '/occasions'
     | '/personalise'
+    | '/reminders'
     | '/shop'
+    | '/wishlist'
     | '/product/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/about'
     | '/cart'
     | '/checkout'
+    | '/contact'
+    | '/delivery'
+    | '/faqs'
     | '/find-my-gift'
     | '/mystery'
+    | '/occasions'
     | '/personalise'
+    | '/reminders'
     | '/shop'
+    | '/wishlist'
     | '/product/$id'
   id:
     | '__root__'
     | '/'
+    | '/about'
     | '/cart'
     | '/checkout'
+    | '/contact'
+    | '/delivery'
+    | '/faqs'
     | '/find-my-gift'
     | '/mystery'
+    | '/occasions'
     | '/personalise'
+    | '/reminders'
     | '/shop'
+    | '/wishlist'
     | '/product/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AboutRoute: typeof AboutRoute
   CartRoute: typeof CartRoute
   CheckoutRoute: typeof CheckoutRoute
+  ContactRoute: typeof ContactRoute
+  DeliveryRoute: typeof DeliveryRoute
+  FaqsRoute: typeof FaqsRoute
   FindMyGiftRoute: typeof FindMyGiftRoute
   MysteryRoute: typeof MysteryRoute
+  OccasionsRoute: typeof OccasionsRoute
   PersonaliseRoute: typeof PersonaliseRoute
+  RemindersRoute: typeof RemindersRoute
   ShopRoute: typeof ShopRoute
+  WishlistRoute: typeof WishlistRoute
   ProductIdRoute: typeof ProductIdRoute
 }
 
@@ -141,6 +232,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/cart': {
@@ -157,6 +255,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CheckoutRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/delivery': {
+      id: '/delivery'
+      path: '/delivery'
+      fullPath: '/delivery'
+      preLoaderRoute: typeof DeliveryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/faqs': {
+      id: '/faqs'
+      path: '/faqs'
+      fullPath: '/faqs'
+      preLoaderRoute: typeof FaqsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/find-my-gift': {
       id: '/find-my-gift'
       path: '/find-my-gift'
@@ -171,6 +290,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MysteryRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/occasions': {
+      id: '/occasions'
+      path: '/occasions'
+      fullPath: '/occasions'
+      preLoaderRoute: typeof OccasionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/personalise': {
       id: '/personalise'
       path: '/personalise'
@@ -178,11 +304,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PersonaliseRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/reminders': {
+      id: '/reminders'
+      path: '/reminders'
+      fullPath: '/reminders'
+      preLoaderRoute: typeof RemindersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/shop': {
       id: '/shop'
       path: '/shop'
       fullPath: '/shop'
       preLoaderRoute: typeof ShopRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/wishlist': {
+      id: '/wishlist'
+      path: '/wishlist'
+      fullPath: '/wishlist'
+      preLoaderRoute: typeof WishlistRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/product/$id': {
@@ -197,12 +337,19 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AboutRoute: AboutRoute,
   CartRoute: CartRoute,
   CheckoutRoute: CheckoutRoute,
+  ContactRoute: ContactRoute,
+  DeliveryRoute: DeliveryRoute,
+  FaqsRoute: FaqsRoute,
   FindMyGiftRoute: FindMyGiftRoute,
   MysteryRoute: MysteryRoute,
+  OccasionsRoute: OccasionsRoute,
   PersonaliseRoute: PersonaliseRoute,
+  RemindersRoute: RemindersRoute,
   ShopRoute: ShopRoute,
+  WishlistRoute: WishlistRoute,
   ProductIdRoute: ProductIdRoute,
 }
 export const routeTree = rootRouteImport
