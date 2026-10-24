@@ -27,28 +27,53 @@ const PEOPLE = [
 function Home() {
   return (
     <>
-      <section className="bg-blush">
-        <div className="mx-auto grid max-w-7xl items-center gap-10 px-4 py-12 sm:px-6 md:grid-cols-2 md:py-20">
-          <div className="animate-fade-up">
+      <section className="relative overflow-hidden">
+        <div className="mx-auto grid max-w-7xl gap-10 px-4 pb-16 pt-8 sm:px-6 md:grid-cols-12 md:items-end md:pb-24 md:pt-16">
+          <div className="animate-fade-up md:col-span-6 md:pb-10">
             <p className="eyebrow">Every feeling deserves a little something</p>
-            <h1 className="mt-4 text-5xl leading-[1.02] sm:text-7xl">You feel it.<br /><em className="text-primary">We help you gift it.</em></h1>
-            <p className="mt-6 max-w-md text-lg text-muted-foreground">From tiny surprises to unforgettable moments, find a gift that says what words sometimes can't.</p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Link to="/find-my-gift" className="inline-flex h-12 items-center gap-2 rounded-full bg-primary px-7 font-semibold text-primary-foreground shadow-lift hover:bg-primary/90">Find My Gift <ArrowRight className="size-4" /></Link>
-              <Link to="/shop" className="inline-flex h-12 items-center rounded-full border border-foreground/20 bg-card/60 px-7 font-semibold hover:bg-card">Explore Gifts</Link>
+            <h1 className="mt-5 text-[3.25rem] leading-[0.95] sm:text-7xl lg:text-[5.75rem]">
+              You feel it.<br /><em className="font-normal text-primary">We help you</em><br /><em className="font-normal text-primary">gift it.</em>
+            </h1>
+            <p className="mt-7 max-w-md text-lg leading-relaxed text-muted-foreground">From tiny surprises to unforgettable moments, find a gift that says what words sometimes can't.</p>
+            <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+              <Link to="/find-my-gift" className="inline-flex h-14 items-center justify-center gap-2 rounded-full bg-primary px-8 py-4 font-semibold text-primary-foreground transition hover:bg-primary/90">Find My Gift <ArrowRight className="size-4" /></Link>
+              <Link to="/shop" className="inline-flex h-14 items-center justify-center rounded-full border border-foreground/20 px-8 py-4 font-semibold transition hover:border-primary hover:text-primary">Explore Gifts</Link>
             </div>
-            <Link to="/find-my-gift" search={{ urgency: "Today" }} className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-primary underline-offset-4 hover:underline">
+            <dl className="mt-10 grid max-w-md grid-cols-3 gap-4 border-t border-border pt-6 text-sm">
+              <div><dt className="text-muted-foreground">Gifts from</dt><dd className="font-display text-2xl">₹149</dd></div>
+              <div><dt className="text-muted-foreground">Feelings</dt><dd className="font-display text-2xl">6</dd></div>
+              <div><dt className="text-muted-foreground">Handwritten</dt><dd className="font-display text-2xl">notes</dd></div>
+            </dl>
+          </div>
+          <div className="relative md:col-span-6">
+            <img src={hero} alt="A gift wrapped in ivory paper with a berry ribbon and handwritten note" width={1280} height={1280} className="aspect-[4/5] w-full rounded-3xl object-cover" />
+            <Link to="/find-my-gift" search={{ urgency: "Today" }} className="absolute left-4 top-4 inline-flex items-center gap-2 rounded-full bg-card/95 px-4 py-2 text-sm font-semibold text-primary backdrop-blur transition hover:bg-card">
               <Clock className="size-4" /> Need a gift today?
             </Link>
-          </div>
-          <div className="relative">
-            <img src={hero} alt="A gift wrapped in ivory paper with a berry ribbon and handwritten note" width={1280} height={1280} className="aspect-[4/5] w-full rounded-3xl object-cover shadow-soft" />
-            <div className="absolute -bottom-5 left-5 rounded-2xl bg-card px-5 py-4 shadow-soft">
-              <p className="font-display text-lg italic">“For you.”</p>
-              <p className="text-xs text-muted-foreground">Handwritten notes, on every order</p>
-            </div>
+            <figure className="absolute -bottom-6 right-4 max-w-[15rem] rounded-2xl border border-border bg-card p-5 sm:right-8">
+              <blockquote className="font-display text-lg italic leading-snug">“For every late-night chai and every exam-week pep talk.”</blockquote>
+              <figcaption className="mt-2 text-xs text-muted-foreground">Sample note · Letter Sealed in Wax, ₹349</figcaption>
+            </figure>
           </div>
         </div>
+        <div className="overflow-hidden border-y border-border bg-primary py-4 text-primary-foreground" aria-hidden>
+          <div className="marquee flex w-max gap-10 whitespace-nowrap font-display text-xl italic">
+            {[0, 1].flatMap((k) => ["I miss you", "I'm proud of you", "Thank you for being there", "I'm sorry", "You deserve this", "Just because"].map((t) => <span key={k + t}>{t} <span className="not-italic text-secondary">✦</span></span>))}
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-4 pt-20 sm:px-6">
+        <p className="eyebrow">How Momento works</p>
+        <ol className="mt-6 grid gap-px overflow-hidden rounded-2xl border border-border bg-border md:grid-cols-3">
+          {[["01", "Start with a feeling", "Proud, sorry, grateful — tell us what you want them to feel."], ["02", "Pick the moment", "A birthday, a farewell, results day, or just a Tuesday."], ["03", "Make it theirs", "Add their name, a memory or a photo. Preview it before it goes."]].map(([n, t, d]) => (
+            <li key={n} className="bg-background p-7">
+              <span className="font-display text-sm text-primary">{n}</span>
+              <p className="mt-3 font-display text-2xl">{t}</p>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{d}</p>
+            </li>
+          ))}
+        </ol>
       </section>
 
       <div className="mx-auto max-w-7xl space-y-24 px-4 pt-20 sm:px-6">
@@ -56,7 +81,7 @@ function Home() {
           <SectionHead eyebrow="Shop by occasion" title="For every little milestone" action={<Link to="/occasions" className="text-sm font-semibold text-primary">All occasions →</Link>} />
           <div className="flex flex-wrap gap-3">
             {OCCASIONS.map((o) => (
-              <Link key={o} to="/shop" search={{ occasion: o }} className="rounded-full border border-border bg-card px-6 py-3 font-display text-lg transition hover:border-primary hover:text-primary">{o}</Link>
+              <Link key={o} to="/shop" search={{ occasion: o }} className="rounded-full border border-border px-6 py-3 font-display text-lg transition hover:border-primary hover:text-primary">{o}</Link>
             ))}
           </div>
         </section>
@@ -66,7 +91,7 @@ function Home() {
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {FEELINGS.map(([say, feel], i) => (
               <Link key={say} to="/shop" search={{ feeling: feel }}
-                className={`group rounded-2xl p-7 transition hover:-translate-y-0.5 ${i % 3 === 1 ? "bg-primary text-primary-foreground" : i % 3 === 2 ? "bg-accent" : "bg-secondary"}`}>
+                className={`group flex min-h-44 flex-col justify-between rounded-2xl p-7 transition hover:-translate-y-0.5 ${i % 3 === 1 ? "bg-primary text-primary-foreground" : i % 3 === 2 ? "bg-accent" : "bg-secondary"}`}>
                 <p className="font-display text-2xl italic">“{say}”</p>
                 <p className="mt-6 text-sm font-semibold opacity-80 group-hover:underline">See gifts →</p>
               </Link>
