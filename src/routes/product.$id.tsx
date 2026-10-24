@@ -69,7 +69,7 @@ function ProductPage() {
       )}
       <section className="mt-16">
         <h2 className="mb-6 text-3xl">You might also love</h2>
-        <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">{related.map((r) => <ProductCard key={r.id} p={r} />)}</div>
+        <div className="grid grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-6 lg:grid-cols-4">{related.map((r) => <ProductCard key={r.id} p={r} />)}</div>
       </section>
     </div>
   );

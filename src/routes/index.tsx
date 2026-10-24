@@ -81,7 +81,7 @@ function Home() {
               <Link key={b} to="/shop" search={{ budget: b }} className="rounded-full bg-ink px-5 py-2 text-sm font-semibold text-ink-foreground hover:opacity-90">{l}</Link>
             ))}
           </div>
-          <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+          <div className="grid grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-6 lg:grid-cols-4">
             {PRODUCTS.filter((p) => p.price < 500).slice(0, 4).map((p) => <ProductCard key={p.id} p={p} />)}
           </div>
         </section>
