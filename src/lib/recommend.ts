@@ -6,6 +6,7 @@ export type QuizAnswers = {
   feeling?: string;
   interests: string[];
   budget?: string;
+  closeness?: "Just getting close" | "Close" | "Inseparable";
   urgency?: "Today" | "ASAP" | "Planning ahead";
 };
 
@@ -18,6 +19,9 @@ export function score(p: Product, a: QuizAnswers) {
   if (a.occasion && p.occasions.includes(a.occasion)) s += 2;
   if (a.feeling && p.feelings.includes(a.feeling)) s += 3;
   s += p.interests.filter((i) => a.interests.includes(i)).length * 2;
+  if (a.closeness === "Inseparable" && p.personalisable) s += 1.5;
+  if (a.closeness === "Just getting close" && !p.photoUpload && p.price < 500) s += 1;
+  if (a.urgency === "Today" && p.sameDay) s += 1;
   return s;
 }
 
@@ -26,16 +30,19 @@ export function inBudget(p: Product, budgetId?: string) {
   return !b || (p.price >= b.min && p.price <= b.max);
 }
 
-function reasons(p: Product, a: QuizAnswers) {
+export function reasons(p: Product, a: QuizAnswers) {
+  const who = a.recipient ? `your ${a.recipient.toLowerCase()}` : "them";
   const r: string[] = [];
-  if (a.feeling && p.feelings.includes(a.feeling)) r.push(`Made to help them feel ${a.feeling.toLowerCase()}.`);
-  if (a.recipient && p.recipients.includes(a.recipient)) r.push(`A natural fit for a ${a.recipient.toLowerCase()}.`);
-  if (a.occasion && p.occasions.includes(a.occasion)) r.push(`Suits a ${a.occasion.toLowerCase()} moment.`);
+  if (a.feeling && p.feelings.includes(a.feeling)) r.push(`It's chosen to make ${who} feel ${a.feeling.toLowerCase()}.`);
+  else if (a.recipient && p.recipients.includes(a.recipient)) r.push(`It's a gift people often pick for ${who}.`);
+  if (a.occasion && p.occasions.includes(a.occasion)) r.push(`It suits a ${a.occasion.toLowerCase()} moment without trying too hard.`);
   const hit = p.interests.filter((i) => a.interests.includes(i));
-  if (hit.length) r.push(`Matches their love of ${hit.join(", ").toLowerCase()}.`);
-  if (a.urgency === "Today" && p.sameDay) r.push("Eligible for demo same-day delivery.");
-  if (!r.length) r.push("A well-loved pick within your budget.");
-  return r;
+  if (hit.length) r.push(`They love ${hit.join(" and ").toLowerCase()}, and this speaks to that.`);
+  if (a.closeness === "Inseparable" && p.personalisable) r.push("You're close, so add a name, memory or inside joke to it.");
+  if (a.urgency === "Today" && p.sameDay) r.push("It qualifies for our demo same-day delivery.");
+  const b = BUDGETS.find((x) => x.id === a.budget);
+  if (b) r.push(`At ${new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 }).format(p.price)} it stays inside your ${b.label} budget.`);
+  return r.length ? r : ["A well-loved pick from our sample catalogue."];
 }
 
 export function recommend(a: QuizAnswers): Pick[] {
