@@ -117,6 +117,8 @@ function Results({ a, message, reset, back, summary, edit }: { a: QuizAnswers; m
           <Link to="/shop" className="mt-6 inline-block rounded-full bg-primary px-6 py-3 font-semibold text-primary-foreground">Browse all gifts</Link>
         </div>
       ) : (
+        <>
+        {picks.length < 3 && <p className="mt-6 rounded-xl bg-muted px-4 py-3 text-sm">Only {picks.length} sample gift{picks.length > 1 ? "s" : ""} fit{picks.length > 1 ? "" : "s"} every answer, so we're not padding the list with weaker matches. Try a wider budget or a later delivery to see more.</p>}
         <div className="mt-8 grid gap-5 md:grid-cols-3">
           {picks.map(({ label, product: p, reasons }, i) => (
             <article key={p.id} className={cn("animate-fade-up flex flex-col overflow-hidden rounded-2xl border bg-card", i === 1 ? "border-primary md:-translate-y-3" : "border-border")} style={{ animationDelay: `${i * 120}ms` }}>
@@ -135,6 +137,7 @@ function Results({ a, message, reset, back, summary, edit }: { a: QuizAnswers; m
             </article>
           ))}
         </div>
+        </>
       )}
     </div>
   );
