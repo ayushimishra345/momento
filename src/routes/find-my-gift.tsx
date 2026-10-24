@@ -52,7 +52,7 @@ function Finder() {
           {steps.map((_, i) => <span key={i} className={cn("h-1.5 flex-1 rounded-full transition-colors", i < step || done ? "bg-primary" : i === step ? "bg-primary/50" : "bg-border")} />)}
         </div>
         {!done ? (
-          <div key={step} className="animate-fade-up mt-10 rounded-[2rem] bg-card p-6 shadow-soft sm:p-10">
+          <div key={step} className="animate-fade-up mt-10 rounded-3xl bg-card p-6 shadow-soft sm:p-10">
             <div className="flex items-center justify-between">
               <button onClick={() => setStep((s) => Math.max(0, s - 1))} disabled={step === 0} className="inline-flex items-center gap-1 text-sm font-semibold disabled:opacity-30"><ArrowLeft className="size-4" /> Back</button>
               <span className="text-sm text-muted-foreground">{step + 1} / {total}</span>

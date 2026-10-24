@@ -35,7 +35,7 @@ function Mystery() {
       <PageHero eyebrow="Mystery gifting · prototype" title="Some feelings are best as a surprise." sub="Tell us a little. We'll choose a sample gift and keep it hidden until you're ready." />
       <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6">
         {stage === "form" && (
-          <div className="rounded-[2rem] bg-card p-6 shadow-soft sm:p-10">
+          <div className="rounded-3xl bg-card p-6 shadow-soft sm:p-10">
             <Row label="Who's it for?" opts={RECIPIENTS} val={r} set={setR} />
             <Row label="Occasion" opts={OCCASIONS} val={o} set={setO} />
             <Row label="Budget" opts={BUDGETS.map((x) => x.label)} val={BUDGETS.find((x) => x.id === b)?.label} set={(l) => setB(BUDGETS.find((x) => x.label === l)!.id)} />
@@ -47,13 +47,13 @@ function Mystery() {
         )}
         {stage === "shaking" && (
           <div className="py-10 text-center">
-            <img src={mysteryImg} alt="Sealed mystery box" className="animate-shake mx-auto w-72 rounded-3xl shadow-lift" />
+            <img src={mysteryImg} alt="Sealed mystery box" className="animate-shake mx-auto w-72 rounded-3xl shadow-soft" />
             <p className="mt-6 font-display text-2xl italic">Choosing something just for them…</p>
           </div>
         )}
         {stage === "revealed" && (
           pick ? (
-            <div className="animate-reveal mx-auto max-w-md overflow-hidden rounded-[2rem] bg-card text-center shadow-lift">
+            <div className="animate-reveal mx-auto max-w-md overflow-hidden rounded-3xl bg-card text-center shadow-soft">
               <img src={pick.product.image} alt={pick.product.name} className="aspect-square w-full object-cover" />
               <div className="p-8">
                 <p className="eyebrow">It's a…</p>

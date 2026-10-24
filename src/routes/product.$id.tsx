@@ -42,7 +42,7 @@ function ProductPage() {
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6">
       <Link to="/shop" className="text-sm text-muted-foreground hover:text-primary">← All gifts</Link>
       <div className="mt-6 grid gap-10 md:grid-cols-2">
-        <img src={p.image} alt={p.name} width={816} height={816} className="aspect-square w-full rounded-[2rem] object-cover shadow-lift" />
+        <img src={p.image} alt={p.name} width={816} height={816} className="aspect-square w-full rounded-3xl object-cover shadow-soft" />
         <div>
           <p className="eyebrow">{p.category} · sample product</p>
           <h1 className="mt-3 text-4xl sm:text-5xl">{p.name}</h1>
@@ -62,14 +62,14 @@ function ProductPage() {
         </div>
       </div>
       {p.personalisable && (
-        <section className="mt-16 rounded-[2rem] bg-card p-6 sm:p-10">
+        <section className="mt-16 rounded-3xl bg-card p-6 sm:p-10">
           <h2 className="mb-6 text-3xl">Make it yours <span className="text-base font-normal text-muted-foreground">(optional)</span></h2>
           <Personaliser photo={p.photoUpload} onSubmit={(v) => add(p.id, v)} cta="Add personalised gift to cart" />
         </section>
       )}
       <section className="mt-16">
         <h2 className="mb-6 text-3xl">You might also love</h2>
-        <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">{related.map((r) => <ProductCard key={r.id} p={r} />)}</div>
+        <div className="grid grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-6 lg:grid-cols-4">{related.map((r) => <ProductCard key={r.id} p={r} />)}</div>
       </section>
     </div>
   );

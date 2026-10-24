@@ -60,7 +60,7 @@ function Shop() {
         )}
         <p className="mb-4 text-sm text-muted-foreground">{list.length} gift{list.length === 1 ? "" : "s"}</p>
         {list.length ? (
-          <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">{list.map((p) => <ProductCard key={p.id} p={p} />)}</div>
+          <div className="grid grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-6 lg:grid-cols-4">{list.map((p) => <ProductCard key={p.id} p={p} />)}</div>
         ) : (
           <div className="rounded-2xl border border-dashed border-border bg-card p-12 text-center">
             <PackageOpen className="mx-auto size-10 text-primary" />
