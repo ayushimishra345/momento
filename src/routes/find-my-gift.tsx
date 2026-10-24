@@ -69,12 +69,12 @@ function Finder() {
             ) : (
               <textarea className={cn(field, "mt-8 h-32 py-3")} value={message} onChange={(e) => setMessage(e.target.value)} placeholder="A memory, an inside joke, something they said once…" />
             )}
-            {("optional" in cur || ("multi" in cur)) && (
+            {("optional" in cur || "multi" in cur || value(cur.key)) ? (
               <div className="mt-8 flex gap-3">
                 <button onClick={() => setStep((s) => s + 1)} className="rounded-full bg-primary px-6 py-3 font-semibold text-primary-foreground">{cur.key === "message" ? "Show my gifts" : "Continue"}</button>
-                <button onClick={() => { if (cur.key === "interests") setA((x) => ({ ...x, interests: [] })); setStep((s) => s + 1); }} className="rounded-full px-5 py-3 font-semibold text-muted-foreground hover:text-foreground">Skip</button>
+                {"optional" in cur && <button onClick={() => { if (cur.key === "interests") setA((x) => ({ ...x, interests: [] })); setStep((s) => s + 1); }} className="rounded-full px-5 py-3 font-semibold text-muted-foreground hover:text-foreground">Skip</button>}
               </div>
-            )}
+            ) : <p className="mt-8 text-sm text-muted-foreground">Choose one to continue — this one's needed for good matches.</p>}
           </div>
         ) : (
           <Results a={a} message={message} reset={() => { setA({ interests: [] }); setMessage(""); setStep(0); }} back={() => setStep(total - 1)}
