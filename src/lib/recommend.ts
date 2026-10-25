@@ -35,7 +35,7 @@ export function reasons(p: Product, a: QuizAnswers) {
   const r: string[] = [];
   if (a.feeling && p.feelings.includes(a.feeling)) r.push(`It's chosen to make ${who} feel ${a.feeling.toLowerCase()}.`);
   else if (a.recipient && p.recipients.includes(a.recipient)) r.push(`It's a gift people often pick for ${who}.`);
-  if (a.occasion && p.occasions.includes(a.occasion)) r.push(`It suits a ${a.occasion.toLowerCase()} moment without trying too hard.`);
+  if (a.occasion && p.occasions.includes(a.occasion)) r.push(`It suits ${/^[aeiou]/i.test(a.occasion) ? "an" : "a"} ${a.occasion.toLowerCase()} moment without trying too hard.`);
   const hit = p.interests.filter((i) => a.interests.includes(i));
   if (hit.length) r.push(`They love ${hit.join(" and ").toLowerCase()}, and this speaks to that.`);
   if (a.closeness === "Inseparable" && p.personalisable) r.push("You're close, so add a name, memory or inside joke to it.");
