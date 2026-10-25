@@ -56,10 +56,10 @@ export function Personaliser({ photo, onSubmit, cta = "Add to cart" }: { photo?:
           <label className="block text-sm font-medium">Upload a photo (JPG/PNG/WebP, max {MAX_MB} MB)
             <input type="file" accept="image/jpeg,image/png,image/webp" onChange={(e) => onFile(e.target.files?.[0])}
               className="mt-1.5 block w-full text-sm file:mr-3 file:rounded-full file:border-0 file:bg-secondary file:px-4 file:py-2 file:font-semibold" />
-            {err && <span role="alert" className="mt-1 block text-xs text-destructive">{err}</span>}
             <span className="mt-1 block text-xs text-muted-foreground">Demo only — your photo stays in this browser and is never uploaded.</span>
           </label>
         )}
+        {err && <p role="alert" className="text-sm text-destructive">{err}</p>}
         <button className="h-12 w-full rounded-full bg-primary font-semibold text-primary-foreground hover:bg-primary/90">{cta}</button>
       </form>
       <div>
