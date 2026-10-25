@@ -13,6 +13,7 @@ type Store = {
   add: (productId: string, personalisation?: Personalisation) => void;
   setQty: (key: string, qty: number) => void;
   remove: (key: string) => void;
+  updatePersonalisation: (key: string, p: Personalisation) => void;
   clear: () => void;
   toggleWish: (id: string) => void;
   subtotal: number;
@@ -56,6 +57,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     count: cart.reduce((s, i) => s + i.qty, 0),
     setQty: (key, qty) => setCart((c) => c.map((i) => (i.key === key ? { ...i, qty: Math.max(1, Math.min(10, qty)) } : i))),
     remove: (key) => setCart((c) => c.filter((i) => i.key !== key)),
+    updatePersonalisation: (key, p) => setCart((c) => c.map((i) => (i.key === key ? { ...i, personalisation: p } : i))),
     clear: () => setCart([]),
     toggleWish: (id) => setWish((w) => (w.includes(id) ? w.filter((x) => x !== id) : [...w, id])),
   };

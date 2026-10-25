@@ -3,7 +3,7 @@ import type { Personalisation } from "@/lib/store";
 import { cn } from "@/lib/utils";
 import { field } from "./ProductCard";
 
-const STYLES = [
+export const STYLES = [
   { id: "Ivory Classic", cls: "bg-card text-foreground border-border" },
   { id: "Blush Bloom", cls: "bg-secondary text-secondary-foreground border-secondary" },
   { id: "Berry Night", cls: "bg-primary text-primary-foreground border-primary" },
@@ -28,7 +28,12 @@ export function Personaliser({ photo, onSubmit, cta = "Add to cart" }: { photo?:
 
   return (
     <div className="grid gap-8 md:grid-cols-2">
-      <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); onSubmit(v); }}>
+      <form className="space-y-4" onSubmit={(e) => {
+        e.preventDefault();
+        if (!v.recipient?.trim() && !v.note?.trim()) return setErr("Add at least a name or a note to personalise this gift.");
+        setErr(undefined);
+        onSubmit(v);
+      }}>
         <label className="block text-sm font-medium">Recipient's name
           <input className={cn(field, "mt-1.5")} maxLength={40} value={v.recipient ?? ""} onChange={(e) => setV({ ...v, recipient: e.target.value })} placeholder="e.g. Ananya" />
         </label>
