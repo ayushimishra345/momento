@@ -146,9 +146,9 @@ function Home() {
         <section className="rounded-3xl bg-accent p-8 md:p-12">
           <div className="grid gap-8 md:grid-cols-[1.2fr_1fr] md:items-center">
             <div>
-              <p className="eyebrow">Local gifting</p>
+              <p className="eyebrow">Demo delivery information</p>
               <h2 className="mt-3 text-4xl">Forgot it's today? Breathe.</h2>
-              <p className="mt-4 max-w-lg text-foreground/75">We're piloting fast local delivery with neighbourhood partners in a few campus areas. Check if yours is in our demo coverage.</p>
+              <p className="mt-4 max-w-lg text-foreground/75">Explore a few illustrative city and campus-area examples. Sample estimates only — not a promise of delivery or a live availability check.</p>
             </div>
             <div className="flex flex-col gap-3 sm:flex-row md:flex-col">
               <Link to="/delivery" className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-ink px-6 font-semibold text-ink-foreground"><MapPin className="size-4" /> Check my area</Link>
