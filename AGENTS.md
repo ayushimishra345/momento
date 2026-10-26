@@ -8,3 +8,5 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- Keep illustrative delivery coverage in `src/lib/delivery.ts` and use its shared lookup for the delivery checker; one source prevents conflicting sample estimates across views.

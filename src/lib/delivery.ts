@@ -1,4 +1,6 @@
-// Sample coverage dataset for the demo. Not real logistics data.
+// CONFIGURABLE EXHIBITION DEMO ONLY: illustrative areas and estimates, not logistics data.
+// A match means only that an entry exists here. It is not a delivery promise,
+// inventory check, partner integration, rider tracker or real-time fulfilment signal.
 export const CITIES: Record<string, { covered: string[]; estimate: string }> = {
   Bengaluru: { covered: ["560001", "560034", "560095", "Koramangala", "Indiranagar", "HSR Layout"], estimate: "2–4 hours (demo estimate)" },
   Mumbai: { covered: ["400050", "400058", "Bandra", "Andheri"], estimate: "3–5 hours (demo estimate)" },
@@ -10,7 +12,7 @@ export const CITIES: Record<string, { covered: string[]; estimate: string }> = {
 export function checkCoverage(city: string, area: string) {
   const c = CITIES[city];
   if (!c) return null;
-  const q = area.trim().toLowerCase();
+  const q = area.trim().replace(/\s+/g, " ").toLowerCase();
   const hit = q && c.covered.some((x) => x.toLowerCase() === q);
   return hit ? c.estimate : null;
 }

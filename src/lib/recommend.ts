@@ -39,7 +39,7 @@ export function reasons(p: Product, a: QuizAnswers) {
   const hit = p.interests.filter((i) => a.interests.includes(i));
   if (hit.length) r.push(`They love ${hit.join(" and ").toLowerCase()}, and this speaks to that.`);
   if (a.closeness === "Inseparable" && p.personalisable) r.push("You're close, so add a name, memory or inside joke to it.");
-  if (a.urgency === "Today" && p.sameDay) r.push("It qualifies for our demo same-day delivery.");
+  if (a.urgency === "Today" && p.sameDay) r.push("It's tagged as a same-day example in our demo catalogue, not a confirmed delivery slot.");
   const b = BUDGETS.find((x) => x.id === a.budget);
   if (b) r.push(`At ${new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 }).format(p.price)} it stays inside your ${b.label} budget.`);
   return r.length ? r : ["A well-loved pick from our sample catalogue."];
