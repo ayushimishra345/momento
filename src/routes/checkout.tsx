@@ -62,7 +62,7 @@ function Checkout() {
       <span className="inline-block rounded-full bg-primary px-4 py-1.5 text-xs font-bold tracking-widest text-primary-foreground">DEMO CHECKOUT</span>
       <h1 className="mt-4 text-4xl">Almost there</h1>
       <p className="mt-2 text-muted-foreground">Sample details are pre-filled. No card details are collected and no payment is processed.</p>
-      <form onSubmit={submit} className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1fr)_340px]">
+      <form noValidate onSubmit={submit} className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1fr)_340px]">
         <div className="grid gap-4 rounded-2xl bg-card p-6 sm:grid-cols-2">
           {In({ k: "name", label: "Your name" })}
           {In({ k: "phone", label: "Phone", type: "tel" })}
