@@ -45,8 +45,11 @@ function Checkout() {
   const total = subtotal + DELIVERY_FEE;
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!f.name.trim()) return setErr("Please enter your name.");
+    if (!/^[\d\s+-]{10,15}$/.test(f.phone.trim()) || f.phone.replace(/\D/g, "").length < 10) return setErr("Please enter a valid 10-digit phone number.");
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.email.trim())) return setErr("Please enter a valid email address.");
+    if (!f.address.trim()) return setErr("Please enter the delivery address.");
     if (!/^\d{6}$/.test(f.pin.trim())) return setErr("Please enter a 6-digit PIN code.");
-    if (!f.name.trim() || !f.address.trim()) return setErr("Please fill in your name and address.");
     setOrder({ id: `MOM-DEMO-${Math.random().toString(36).slice(2, 8).toUpperCase()}`, total });
     clear();
   };
@@ -59,7 +62,7 @@ function Checkout() {
       <span className="inline-block rounded-full bg-primary px-4 py-1.5 text-xs font-bold tracking-widest text-primary-foreground">DEMO CHECKOUT</span>
       <h1 className="mt-4 text-4xl">Almost there</h1>
       <p className="mt-2 text-muted-foreground">Sample details are pre-filled. No card details are collected and no payment is processed.</p>
-      <form onSubmit={submit} className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1fr)_340px]">
+      <form noValidate onSubmit={submit} className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1fr)_340px]">
         <div className="grid gap-4 rounded-2xl bg-card p-6 sm:grid-cols-2">
           {In({ k: "name", label: "Your name" })}
           {In({ k: "phone", label: "Phone", type: "tel" })}
