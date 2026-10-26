@@ -50,7 +50,7 @@ function ProductPage() {
           <p className="mt-5 text-lg text-muted-foreground">{p.description}</p>
           <div className="mt-6 flex flex-wrap gap-2 text-xs">
             {p.feelings.map((f) => <span key={f} className="rounded-full bg-secondary px-3 py-1 font-semibold text-secondary-foreground">Feels {f.toLowerCase()}</span>)}
-            {p.sameDay && <span className="inline-flex items-center gap-1 rounded-full bg-accent px-3 py-1 font-semibold"><Truck className="size-3" /> Demo same-day eligible</span>}
+            {p.sameDay && <span className="inline-flex items-center gap-1 rounded-full bg-accent px-3 py-1 font-semibold"><Truck className="size-3" /> Same-day example · demo only</span>}
           </div>
           <div className="mt-8 flex gap-3">
             <button onClick={() => add(p.id)} className="h-12 flex-1 rounded-full bg-primary font-semibold text-primary-foreground hover:bg-primary/90">Add to cart{p.personalisable ? " without note" : ""}</button>

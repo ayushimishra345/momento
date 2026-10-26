@@ -42,7 +42,7 @@ function Mystery() {
             <Row label="Vibe" opts={VIBES.map((x) => x[0])} val={v} set={setV} />
             <button disabled={!ready} onClick={() => { setStage("shaking"); setTimeout(() => setStage("revealed"), 1600); }}
               className="mt-10 h-12 w-full rounded-full bg-primary font-semibold text-primary-foreground disabled:opacity-40">Seal my mystery</button>
-            <p className="mt-3 text-center text-xs text-muted-foreground">This is a prototype experience — no real mystery order is fulfilled.</p>
+            <p className="mt-3 text-center text-xs text-muted-foreground">This is a prototype experience — no real orders are placed or fulfilled.</p>
           </div>
         )}
         {stage === "shaking" && (
