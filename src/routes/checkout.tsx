@@ -45,8 +45,11 @@ function Checkout() {
   const total = subtotal + DELIVERY_FEE;
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!f.name.trim()) return setErr("Please enter your name.");
+    if (!/^[\d\s+-]{10,15}$/.test(f.phone.trim()) || f.phone.replace(/\D/g, "").length < 10) return setErr("Please enter a valid 10-digit phone number.");
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.email.trim())) return setErr("Please enter a valid email address.");
+    if (!f.address.trim()) return setErr("Please enter the delivery address.");
     if (!/^\d{6}$/.test(f.pin.trim())) return setErr("Please enter a 6-digit PIN code.");
-    if (!f.name.trim() || !f.address.trim()) return setErr("Please fill in your name and address.");
     setOrder({ id: `MOM-DEMO-${Math.random().toString(36).slice(2, 8).toUpperCase()}`, total });
     clear();
   };
