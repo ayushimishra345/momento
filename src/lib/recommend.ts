@@ -12,6 +12,10 @@ export type QuizAnswers = {
 
 export type Pick = { label: string; product: Product; reasons: string[] };
 
+export function skipOptionalAnswer(a: QuizAnswers, key: "closeness" | "interests"): QuizAnswers {
+  return key === "interests" ? { ...a, interests: [] } : { ...a, closeness: undefined };
+}
+
 /** Deterministic, rule-based scoring. No AI involved. */
 export function score(p: Product, a: QuizAnswers) {
   let s = p.popularity / 10;
@@ -48,8 +52,7 @@ export function reasons(p: Product, a: QuizAnswers) {
 export function recommend(a: QuizAnswers): Pick[] {
   let pool = PRODUCTS.filter((p) => inBudget(p, a.budget));
   if (a.urgency === "Today") {
-    const fast = pool.filter((p) => p.sameDay);
-    if (fast.length) pool = fast;
+    pool = pool.filter((p) => p.sameDay);
   }
   if (!pool.length) return [];
   const ranked = [...pool].sort((x, y) => score(y, a) - score(x, a) || x.price - y.price);

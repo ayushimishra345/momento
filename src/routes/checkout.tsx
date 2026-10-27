@@ -6,6 +6,7 @@ import { CITIES } from "@/lib/delivery";
 import { inr } from "@/lib/products";
 import { seo } from "@/lib/seo";
 import { DELIVERY_FEE, useStore } from "@/lib/store";
+import { validPhone } from "@/lib/checkout";
 
 export const Route = createFileRoute("/checkout")({
   head: () => seo("Demo checkout", "A demonstration checkout. No payment is taken and no order is placed."),
@@ -46,7 +47,7 @@ function Checkout() {
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!f.name.trim()) return setErr("Please enter your name.");
-    if (!/^[\d\s+-]{10,15}$/.test(f.phone.trim()) || f.phone.replace(/\D/g, "").length < 10) return setErr("Please enter a valid 10-digit phone number.");
+    if (!validPhone(f.phone.trim())) return setErr("Please enter a valid 10-digit phone number (optional +91 country code).");
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.email.trim())) return setErr("Please enter a valid email address.");
     if (!f.address.trim()) return setErr("Please enter the delivery address.");
     if (!/^\d{6}$/.test(f.pin.trim())) return setErr("Please enter a 6-digit PIN code.");
