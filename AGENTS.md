@@ -10,3 +10,5 @@
 <!-- LOVABLE:END -->
 
 - Keep illustrative delivery coverage in `src/lib/delivery.ts` and use its shared lookup for the delivery checker; one source prevents conflicting sample estimates across views.
+- Reuse `Personaliser` for product and cart editing with shared validation in `src/lib/personalisation.ts`; save small local thumbnails so photo editing and retention work consistently.
+- Validate browser cart restoration and guard storage writes; unavailable or malformed storage must not break shopping.
