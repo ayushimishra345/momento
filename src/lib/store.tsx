@@ -1,9 +1,8 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import { toast } from "sonner";
 import { getProduct } from "./products";
-import type { Personalisation } from "./personalisation";
 
-export type { Personalisation } from "./personalisation";
+export type Personalisation = { recipient?: string; note?: string; memory?: string; style?: string; photoName?: string };
 export type CartItem = { key: string; productId: string; qty: number; personalisation?: Personalisation };
 
 export const DELIVERY_FEE = 49;
@@ -25,19 +24,6 @@ const Ctx = createContext<Store | null>(null);
 const CART = "momento-demo-cart";
 const WISH = "momento-demo-wishlist";
 
-export const clampQuantity = (qty: number) => Number.isFinite(qty) ? Math.max(1, Math.min(10, Math.floor(qty))) : 1;
-export function restoreCart(value: unknown): CartItem[] {
-  if (!Array.isArray(value)) return [];
-  const keys = new Set<string>();
-  return value.flatMap((item) => {
-    if (!item || typeof item !== "object" || typeof item.productId !== "string" || !getProduct(item.productId) || typeof item.key !== "string" || typeof item.qty !== "number") return [];
-    const key = keys.has(item.key) ? crypto.randomUUID() : item.key;
-    keys.add(key);
-    const raw = item.personalisation;
-    const personalisation: Personalisation | undefined = raw && typeof raw === "object" ? Object.fromEntries(Object.entries(raw).filter(([k, v]) => ["recipient", "note", "memory", "style", "photoName", "photoDataUrl"].includes(k) && typeof v === "string")) : undefined;
-    return [{ key, productId: item.productId, qty: clampQuantity(item.qty), personalisation }];
-  });
-
 export function StoreProvider({ children }: { children: ReactNode }) {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [wishlist, setWish] = useState<string[]>([]);
@@ -45,35 +31,22 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     try {
-      setCart(restoreCart(JSON.parse(localStorage.getItem(CART) || "[]")));
-    } catch {}
-    try {
-      const saved: unknown = JSON.parse(localStorage.getItem(WISH) || "[]");
-      setWish(Array.isArray(saved) ? [...new Set(saved.filter((id): id is string => typeof id === "string" && Boolean(getProduct(id))))] : []);
+      setCart(JSON.parse(localStorage.getItem(CART) || "[]"));
+      setWish(JSON.parse(localStorage.getItem(WISH) || "[]"));
     } catch {}
     setReady(true);
   }, []);
-  useEffect(() => {
-    if (!ready) return;
-    try { localStorage.setItem(CART, JSON.stringify(cart)); }
-    catch { toast.error("Your cart works for this visit, but this browser couldn't save it for refresh.", { id: "cart-storage" }); }
-  }, [cart, ready]);
-  useEffect(() => {
-    if (!ready) return;
-    try { localStorage.setItem(WISH, JSON.stringify(wishlist)); }
-    catch { toast.error("Your wishlist works for this visit, but this browser couldn't save it for refresh.", { id: "wish-storage" }); }
-  }, [wishlist, ready]);
+  useEffect(() => { if (ready) localStorage.setItem(CART, JSON.stringify(cart)); }, [cart, ready]);
+  useEffect(() => { if (ready) localStorage.setItem(WISH, JSON.stringify(wishlist)); }, [wishlist, ready]);
 
   const add: Store["add"] = (productId, personalisation) => {
     const p = getProduct(productId);
-    if (!p) return;
-    const key = `${productId}-${crypto.randomUUID()}`;
     setCart((c) => {
       if (!personalisation) {
         const ex = c.find((i) => i.productId === productId && !i.personalisation);
-        if (ex) return c.map((i) => (i === ex ? { ...i, qty: clampQuantity(i.qty + 1) } : i));
+        if (ex) return c.map((i) => (i === ex ? { ...i, qty: i.qty + 1 } : i));
       }
-      return [...c, { key, productId, qty: 1, personalisation }];
+      return [...c, { key: `${productId}-${Date.now()}`, productId, qty: 1, personalisation }];
     });
     toast.success(`${p?.name ?? "Gift"} added to your cart`);
   };
@@ -82,7 +55,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const value: Store = {
     cart, wishlist, add, subtotal,
     count: cart.reduce((s, i) => s + i.qty, 0),
-    setQty: (key, qty) => setCart((c) => c.map((i) => (i.key === key ? { ...i, qty: clampQuantity(qty) } : i))),
+    setQty: (key, qty) => setCart((c) => c.map((i) => (i.key === key ? { ...i, qty: Math.max(1, Math.min(10, qty)) } : i))),
     remove: (key) => setCart((c) => c.filter((i) => i.key !== key)),
     updatePersonalisation: (key, p) => setCart((c) => c.map((i) => (i.key === key ? { ...i, personalisation: p } : i))),
     clear: () => setCart([]),

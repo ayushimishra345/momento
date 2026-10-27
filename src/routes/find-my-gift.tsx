@@ -3,8 +3,7 @@ import { ArrowLeft, RotateCcw } from "lucide-react";
 import { useState } from "react";
 import { chip, field } from "@/components/ProductCard";
 import { BUDGETS, FEELINGS, INTERESTS, inr, OCCASIONS, RECIPIENTS } from "@/lib/products";
-import { recommend, skipOptionalAnswer, type QuizAnswers } from "@/lib/recommend";
-import { Button } from "@/components/ui/button";
+import { recommend, type QuizAnswers } from "@/lib/recommend";
 import { seo } from "@/lib/seo";
 import { useStore } from "@/lib/store";
 import { cn } from "@/lib/utils";
@@ -23,7 +22,6 @@ function Finder() {
   const [a, setA] = useState<QuizAnswers>({ interests: [], urgency });
   const [step, setStep] = useState(0);
   const [message, setMessage] = useState("");
-  const [editingAnswer, setEditingAnswer] = useState(false);
 
   const steps = [
     { title: "Who is the gift for?", key: "recipient", opts: RECIPIENTS },
@@ -42,16 +40,9 @@ function Finder() {
   const value = (k: string) => (k === "budget" ? BUDGETS.find((b) => b.id === a.budget)?.label : (a as any)[k]);
   const pick = (k: string, o: string) => {
     if (k === "interests") return setA((x) => ({ ...x, interests: x.interests.includes(o) ? x.interests.filter((i) => i !== o) : [...x.interests, o] }));
-    const v = k === "budget" ? BUDGETS.find((b) => b.label === o)?.id : o;
-    if (!v) return;
+    const v = k === "budget" ? BUDGETS.find((b) => b.label === o)!.id : o;
     setA((x) => ({ ...x, [k]: v }));
-    advance();
-  };
-  const advance = () => { setStep((s) => editingAnswer ? total : s + 1); setEditingAnswer(false); };
-  const skip = () => {
-    if (cur.key === "message") setMessage("");
-    else if (cur.key === "closeness" || cur.key === "interests") setA((x) => skipOptionalAnswer(x, cur.key as "closeness" | "interests"));
-    advance();
+    setStep((s) => s + 1);
   };
 
   return (
@@ -72,23 +63,23 @@ function Finder() {
               <div className="mt-8 flex flex-wrap gap-3">
                 {cur.opts.map((o) => {
                   const on = cur.key === "interests" ? a.interests.includes(o) : value(cur.key) === o;
-                  return <Button variant="ghost" aria-pressed={on} key={o} className={cn(chip(on), "h-auto px-5 py-3 text-base")} onClick={() => pick(cur.key, o)}>{o}</Button>;
+                  return <button key={o} className={cn(chip(on), "px-5 py-3 text-base")} onClick={() => pick(cur.key, o)}>{o}</button>;
                 })}
               </div>
             ) : (
-              <textarea aria-label="Personal memory" maxLength={300} className={cn(field, "mt-8 h-32 py-3")} value={message} onChange={(e) => setMessage(e.target.value)} placeholder="A memory, an inside joke, something they said once…" />
+              <textarea className={cn(field, "mt-8 h-32 py-3")} value={message} onChange={(e) => setMessage(e.target.value)} placeholder="A memory, an inside joke, something they said once…" />
             )}
             {("optional" in cur || "multi" in cur || value(cur.key)) ? (
               <div className="mt-8 flex gap-3">
-                <Button onClick={advance} className="h-auto rounded-full px-6 py-3 shadow-none font-semibold">{editingAnswer ? "Update my gifts" : cur.key === "message" ? "Show my gifts" : "Continue"}</Button>
-                {"optional" in cur && <Button variant="ghost" onClick={skip} className="h-auto rounded-full px-5 py-3 font-semibold text-muted-foreground">Skip</Button>}
+                <button onClick={() => setStep((s) => s + 1)} className="rounded-full bg-primary px-6 py-3 font-semibold text-primary-foreground">{cur.key === "message" ? "Show my gifts" : "Continue"}</button>
+                {"optional" in cur && <button onClick={() => { if (cur.key === "interests") setA((x) => ({ ...x, interests: [] })); setStep((s) => s + 1); }} className="rounded-full px-5 py-3 font-semibold text-muted-foreground hover:text-foreground">Skip</button>}
               </div>
             ) : <p className="mt-8 text-sm text-muted-foreground">Choose one to continue — this one's needed for good matches.</p>}
           </div>
         ) : (
-          <Results a={a} message={message} reset={() => { setA({ interests: [] }); setMessage(""); setStep(0); setEditingAnswer(false); }} back={() => { setStep(total - 1); setEditingAnswer(true); }}
+          <Results a={a} message={message} reset={() => { setA({ interests: [] }); setMessage(""); setStep(0); }} back={() => setStep(total - 1)}
             summary={steps.map((st, i) => ({ i, title: st.title, v: st.key === "interests" ? a.interests.join(", ") : st.key === "message" ? message : value(st.key) })).filter((x) => x.v)}
-            edit={(i) => { setStep(i); setEditingAnswer(true); }} />
+            edit={setStep} />
         )}
       </div>
     </div>
