@@ -1,12 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Minus, Pencil, Plus, ShoppingBag, Trash2 } from "lucide-react";
 import { useState } from "react";
-import { PageHero, field } from "@/components/ProductCard";
-import { STYLES } from "@/components/Personaliser";
+import { PageHero } from "@/components/ProductCard";
+import { Personaliser } from "@/components/Personaliser";
+import { Button } from "@/components/ui/button";
 import { getProduct, inr } from "@/lib/products";
 import { seo } from "@/lib/seo";
-import { DELIVERY_FEE, useStore, type CartItem, type Personalisation } from "@/lib/store";
-import { cn } from "@/lib/utils";
+import { DELIVERY_FEE, useStore, type CartItem } from "@/lib/store";
 
 export const Route = createFileRoute("/cart")({
   head: () => seo("Your cart", "Review your Momento gifts and personalisation before demo checkout."),
@@ -65,12 +65,13 @@ function CartRow({ item, onQty, onRemove }: { item: CartItem; onQty: (q: number)
           <Link to="/product/$id" params={{ id: p.id }} className="font-display text-lg hover:text-primary">{p.name}</Link>
           <p className="text-sm text-muted-foreground">{inr(p.price)} each</p>
           {per && (
-            <div className="mt-2 rounded-lg bg-muted p-3 text-xs">
+            <div className="mt-2 break-words rounded-lg bg-muted p-3 text-xs">
               {per.recipient && <p><b>For:</b> {per.recipient}</p>}
               {per.note && <p className="line-clamp-2"><b>Note:</b> {per.note}</p>}
               {per.memory && <p className="line-clamp-2"><b>Memory:</b> {per.memory}</p>}
               {per.style && <p><b>Card:</b> {per.style}</p>}
               {per.photoName && <p><b>Photo:</b> {per.photoName}</p>}
+              {per.photoDataUrl && <img src={per.photoDataUrl} alt="Saved personalised photo" className="mt-2 size-16 rounded object-cover" />}
             </div>
           )}
           {p.personalisable && !editing && (
@@ -81,62 +82,23 @@ function CartRow({ item, onQty, onRemove }: { item: CartItem; onQty: (q: number)
         </div>
         <div className="col-span-2 flex items-center justify-between gap-3 sm:col-span-1 sm:flex-col sm:items-end">
           <div className="flex items-center rounded-full border border-border">
-            <button aria-label="Decrease quantity" onClick={() => onQty(item.qty - 1)} className="p-2"><Minus className="size-4" /></button>
+            <Button variant="ghost" size="icon" disabled={item.qty <= 1} aria-label="Decrease quantity" onClick={() => onQty(item.qty - 1)} className="rounded-full"><Minus className="size-4" /></Button>
             <span className="w-6 text-center text-sm font-semibold">{item.qty}</span>
-            <button aria-label="Increase quantity" onClick={() => onQty(item.qty + 1)} className="p-2"><Plus className="size-4" /></button>
+            <Button variant="ghost" size="icon" disabled={item.qty >= 10} aria-label="Increase quantity" onClick={() => onQty(item.qty + 1)} className="rounded-full"><Plus className="size-4" /></Button>
           </div>
           <p className="font-semibold">{inr(p.price * item.qty)}</p>
           <button onClick={onRemove} className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-destructive"><Trash2 className="size-3" /> Remove</button>
         </div>
       </div>
       {editing && (
-        <EditPersonalisation
+        <div className="mt-4 border-t border-border pt-4"><Personaliser
+          photo={p.photoUpload}
+          cta="Save changes"
           initial={per ?? { style: "Ivory Classic" }}
-          onSave={(v) => { updatePersonalisation(item.key, v); setEditing(false); }}
+          onSubmit={(v) => { updatePersonalisation(item.key, v); setEditing(false); }}
           onCancel={() => setEditing(false)}
-        />
+        /></div>
       )}
     </li>
-  );
-}
-
-function EditPersonalisation({ initial, onSave, onCancel }: { initial: Personalisation; onSave: (p: Personalisation) => void; onCancel: () => void }) {
-  const [v, setV] = useState<Personalisation>(initial);
-  const [err, setErr] = useState<string>();
-  return (
-    <form
-      className="mt-4 space-y-3 rounded-xl border border-border p-4"
-      onSubmit={(e) => {
-        e.preventDefault();
-        if (!v.recipient?.trim() && !v.note?.trim()) return setErr("Add at least a name or a note.");
-        onSave(v);
-      }}
-    >
-      <div className="grid gap-3 sm:grid-cols-2">
-        <label className="block text-sm font-medium">Recipient's name
-          <input className={cn(field, "mt-1.5")} maxLength={40} value={v.recipient ?? ""} onChange={(e) => setV({ ...v, recipient: e.target.value })} />
-        </label>
-        <fieldset>
-          <legend className="text-sm font-medium">Card style</legend>
-          <div className="mt-1.5 flex flex-wrap gap-2">
-            {STYLES.map((s) => (
-              <button type="button" key={s.id} onClick={() => setV({ ...v, style: s.id })} aria-pressed={v.style === s.id}
-                className={cn("rounded-full border-2 px-3 py-1 text-xs font-semibold", s.cls, v.style === s.id ? "ring-2 ring-ring ring-offset-2" : "")}>{s.id}</button>
-            ))}
-          </div>
-        </fieldset>
-      </div>
-      <label className="block text-sm font-medium">Gift note
-        <textarea className={cn(field, "mt-1.5 h-20 py-3")} maxLength={240} value={v.note ?? ""} onChange={(e) => setV({ ...v, note: e.target.value })} />
-      </label>
-      <label className="block text-sm font-medium">A shared memory (optional)
-        <textarea className={cn(field, "mt-1.5 h-16 py-3")} maxLength={300} value={v.memory ?? ""} onChange={(e) => setV({ ...v, memory: e.target.value })} />
-      </label>
-      {err && <p role="alert" className="text-sm text-destructive">{err}</p>}
-      <div className="flex gap-2">
-        <button className="rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground">Save changes</button>
-        <button type="button" onClick={onCancel} className="rounded-full border border-border px-5 py-2 text-sm font-semibold">Cancel</button>
-      </div>
-    </form>
   );
 }
