@@ -3,7 +3,7 @@
 - [x] Remove unsupported delivery claims and connect the urgent gift finder.
 - [x] Test coverage cases and the complete checker-to-finder journey.
 # Preview audit
-- [ ] Click-test finder, budgets, product, personalisation, cart, wishlist, checkout, phone menu; fix issues.
+- [x] Click-test finder, budgets, product, personalisation, cart, wishlist, checkout, phone menu; fix issues.
 
 # Razorpay payments (from uploaded brief)
 - [ ] Enable Lovable Cloud, orders table, admin view — waiting on user go-ahead
