@@ -14,16 +14,170 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      order_items: {
+        Row: {
+          id: string
+          order_id: string
+          personalisation: Json | null
+          product_id: string
+          product_name: string
+          qty: number
+          unit_paise: number
+        }
+        Insert: {
+          id?: string
+          order_id: string
+          personalisation?: Json | null
+          product_id: string
+          product_name: string
+          qty: number
+          unit_paise: number
+        }
+        Update: {
+          id?: string
+          order_id?: string
+          personalisation?: Json | null
+          product_id?: string
+          product_name?: string
+          qty?: number
+          unit_paise?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_items_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      orders: {
+        Row: {
+          address: string
+          city: string
+          created_at: string
+          currency: string
+          customer_email: string
+          customer_name: string
+          customer_phone: string
+          delivery_paise: number
+          gateway_order_id: string | null
+          gateway_payment_id: string | null
+          id: string
+          order_status: string
+          paid_at: string | null
+          payment_method: string
+          payment_status: string
+          pin: string
+          recipient_name: string | null
+          reference: string
+          subtotal_paise: number
+          test_mode: boolean
+          total_paise: number
+          updated_at: string
+        }
+        Insert: {
+          address: string
+          city: string
+          created_at?: string
+          currency?: string
+          customer_email: string
+          customer_name: string
+          customer_phone: string
+          delivery_paise: number
+          gateway_order_id?: string | null
+          gateway_payment_id?: string | null
+          id?: string
+          order_status?: string
+          paid_at?: string | null
+          payment_method: string
+          payment_status?: string
+          pin: string
+          recipient_name?: string | null
+          reference: string
+          subtotal_paise: number
+          test_mode?: boolean
+          total_paise: number
+          updated_at?: string
+        }
+        Update: {
+          address?: string
+          city?: string
+          created_at?: string
+          currency?: string
+          customer_email?: string
+          customer_name?: string
+          customer_phone?: string
+          delivery_paise?: number
+          gateway_order_id?: string | null
+          gateway_payment_id?: string | null
+          id?: string
+          order_status?: string
+          paid_at?: string | null
+          payment_method?: string
+          payment_status?: string
+          pin?: string
+          recipient_name?: string | null
+          reference?: string
+          subtotal_paise?: number
+          test_mode?: boolean
+          total_paise?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      webhook_events: {
+        Row: {
+          event_id: string
+          event_type: string
+          received_at: string
+        }
+        Insert: {
+          event_id: string
+          event_type: string
+          received_at?: string
+        }
+        Update: {
+          event_id?: string
+          event_type?: string
+          received_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +304,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "user"],
+    },
   },
 } as const
