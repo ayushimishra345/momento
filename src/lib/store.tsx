@@ -5,7 +5,7 @@ import { getProduct } from "./products";
 export type Personalisation = { recipient?: string; note?: string; memory?: string; style?: string; photoName?: string };
 export type CartItem = { key: string; productId: string; qty: number; personalisation?: Personalisation };
 
-export const DELIVERY_FEE = 49;
+export { DELIVERY_FEE } from "./pricing";
 
 type Store = {
   cart: CartItem[];
