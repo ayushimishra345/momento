@@ -6,5 +6,8 @@
 - [x] Click-test finder, budgets, product, personalisation, cart, wishlist, checkout, phone menu; fix issues.
 
 # Razorpay payments (from uploaded brief)
-- [ ] Enable Lovable Cloud, orders table, admin view — waiting on user go-ahead
-- [ ] Razorpay test-mode checkout, server verification, webhook, COD — waiting on Razorpay test keys
+- [x] Enable Lovable Cloud, orders table, admin view
+- [x] Razorpay test-mode checkout, server verification, webhook, COD
+- [ ] Webhook secret + Razorpay dashboard webhook — waiting on user
+- [ ] Complete a test payment in the Razorpay window (success/fail) — needs a person to click through
+- [ ] Make a staff account an admin — waiting on user signing up

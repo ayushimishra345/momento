@@ -10,3 +10,5 @@
 <!-- LOVABLE:END -->
 
 - Keep illustrative delivery coverage in `src/lib/delivery.ts` and use its shared lookup for the delivery checker; one source prevents conflicting sample estimates across views.
+- Payments: Razorpay order creation, signature verification and webhooks run only server-side (`src/lib/payments.functions.ts`, `src/lib/razorpay.server.ts`, `/api/public/razorpay-webhook`); totals always come from `priceCart` in `src/lib/pricing.ts`, never from the browser.
+- Orders are written only by the server (service role); browser reads are admin-only via `has_role` RLS, and customers see status by unguessable reference.
