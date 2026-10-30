@@ -1,38 +1,44 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { CheckCircle2 } from "lucide-react";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
+import { useQuery } from "@tanstack/react-query";
+import { Banknote, Loader2, ShieldCheck, Smartphone } from "lucide-react";
 import { useState } from "react";
 import { field } from "@/components/ProductCard";
 import { CITIES } from "@/lib/delivery";
-import { inr } from "@/lib/products";
+import { getPaymentConfig, reportPaymentFailure, startCheckout, verifyPayment } from "@/lib/payments.functions";
+import { getProduct, inr } from "@/lib/products";
 import { seo } from "@/lib/seo";
 import { DELIVERY_FEE, useStore } from "@/lib/store";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/checkout")({
-  head: () => seo("Demo checkout", "A demonstration checkout. No payment is taken and no order is placed."),
+  head: () => seo("Checkout", "Pay securely with Razorpay (test mode) or choose Cash on Delivery for your Momento gift."),
   component: Checkout,
 });
 
-const SAMPLE = { name: "Aarav Sharma", phone: "98765 43210", email: "aarav.demo@example.com", recipient: "Ananya", address: "Room 214, Girls' Hostel B, Koramangala", city: "Bengaluru", pin: "560034" };
+const EMPTY = { name: "", phone: "", email: "", recipient: "", address: "", city: "Bengaluru", pin: "" };
+
+declare global { interface Window { Razorpay?: any } }
+const loadRazorpay = () => new Promise<boolean>((res) => {
+  if (window.Razorpay) return res(true);
+  const s = document.createElement("script");
+  s.src = "https://checkout.razorpay.com/v1/checkout.js";
+  s.onload = () => res(true); s.onerror = () => res(false);
+  document.body.appendChild(s);
+});
 
 function Checkout() {
   const { cart, subtotal, clear } = useStore();
-  const [f, setF] = useState(SAMPLE);
+  const nav = useNavigate();
+  const cfgFn = useServerFn(getPaymentConfig);
+  const startFn = useServerFn(startCheckout);
+  const verifyFn = useServerFn(verifyPayment);
+  const failFn = useServerFn(reportPaymentFailure);
+  const { data: cfg } = useQuery({ queryKey: ["payment-config"], queryFn: () => cfgFn() });
+  const [f, setF] = useState(EMPTY);
+  const [method, setMethod] = useState<"online" | "cod">("online");
   const [err, setErr] = useState<string>();
-  const [order, setOrder] = useState<{ id: string; total: number }>();
-
-  if (order)
-    return (
-      <div className="bg-blush">
-        <div className="animate-reveal mx-auto max-w-xl px-4 py-20 text-center">
-          <CheckCircle2 className="mx-auto size-14 text-primary" />
-          <p className="eyebrow mt-6">Demo order confirmed</p>
-          <h1 className="mt-3 text-5xl">Your feeling is all wrapped up.</h1>
-          <p className="mt-6 rounded-2xl bg-card p-5 text-sm">Demo order ID <b className="font-mono">{order.id}</b> · {inr(order.total)}</p>
-          <p className="mt-6 text-muted-foreground">This is a prototype. No real purchase was made, no payment was taken and nothing will be delivered.</p>
-          <Link to="/" className="mt-8 inline-block rounded-full bg-primary px-7 py-3 font-semibold text-primary-foreground">Back to home</Link>
-        </div>
-      </div>
-    );
+  const [busy, setBusy] = useState<string>();
 
   if (!cart.length)
     return (
@@ -43,46 +49,106 @@ function Checkout() {
     );
 
   const total = subtotal + DELIVERY_FEE;
-  const submit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!f.name.trim()) return setErr("Please enter your name.");
-    if (!/^[\d\s+-]{10,15}$/.test(f.phone.trim()) || f.phone.replace(/\D/g, "").length < 10) return setErr("Please enter a valid 10-digit phone number.");
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.email.trim())) return setErr("Please enter a valid email address.");
-    if (!f.address.trim()) return setErr("Please enter the delivery address.");
-    if (!/^\d{6}$/.test(f.pin.trim())) return setErr("Please enter a 6-digit PIN code.");
-    setOrder({ id: `MOM-DEMO-${Math.random().toString(36).slice(2, 8).toUpperCase()}`, total });
-    clear();
+  const onlineReady = !!cfg?.onlineConfigured;
+
+  const validate = () => {
+    if (!f.name.trim()) return "Please enter your name.";
+    if (!/^[\d\s+-]{10,15}$/.test(f.phone.trim()) || f.phone.replace(/\D/g, "").length < 10) return "Please enter a valid 10-digit phone number.";
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.email.trim())) return "Please enter a valid email address.";
+    if (!f.address.trim()) return "Please enter the delivery address.";
+    if (!/^\d{6}$/.test(f.pin.trim())) return "Please enter a 6-digit PIN code.";
+    if (method === "online" && !onlineReady) return "Online payment isn't set up yet. Choose Cash on Delivery.";
+    if (method === "cod" && !cfg?.codEnabled) return "Cash on Delivery isn't available.";
   };
-  const In = ({ k, label, type = "text" }: { k: keyof typeof SAMPLE; label: string; type?: string }) => (
-    <label className="block text-sm font-medium">{label}<input type={type} className={`${field} mt-1.5`} value={f[k]} onChange={(e) => setF({ ...f, [k]: e.target.value })} /></label>
+
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const v = validate(); if (v) return setErr(v);
+    setErr(undefined); setBusy("Creating your order…");
+    try {
+      const r = await startFn({ data: {
+        method, customer: f,
+        items: cart.map((i) => ({ productId: i.productId, qty: i.qty, personalisation: i.personalisation ? { recipient: i.personalisation.recipient, note: i.personalisation.note, memory: i.personalisation.memory, style: i.personalisation.style } : undefined })),
+      } });
+      if (r.method === "cod") { clear(); return nav({ to: "/order/$reference", params: { reference: r.reference } }); }
+      setBusy("Opening secure payment…");
+      if (!(await loadRazorpay())) throw new Error("Couldn't load the payment window. Check your connection and try again.");
+      const rzp = new window.Razorpay({
+        key: r.keyId, amount: r.amount, currency: "INR", order_id: r.razorpayOrderId,
+        name: "Momento", description: `Order ${r.reference}${r.testMode ? " (test mode)" : ""}`,
+        prefill: { name: f.name, email: f.email, contact: f.phone.replace(/\D/g, "") },
+        theme: { color: "#6e2440" },
+        handler: async (resp: any) => {
+          setBusy("Confirming your payment…");
+          const ok = await verifyFn({ data: { reference: r.reference, ...resp } });
+          if (ok.ok) { clear(); nav({ to: "/order/$reference", params: { reference: r.reference } }); }
+          else { setBusy(undefined); setErr(`${ok.reason} You have not been charged twice — please try again.`); }
+        },
+        modal: { ondismiss: () => { setBusy(undefined); setErr("Payment cancelled. Your cart is saved — you can try again."); } },
+      });
+      rzp.on("payment.failed", async (resp: any) => {
+        await failFn({ data: { reference: r.reference, razorpay_order_id: r.razorpayOrderId } });
+        setBusy(undefined); setErr(`Payment failed: ${resp?.error?.description ?? "please try another method"}. You can retry.`);
+      });
+      rzp.open();
+    } catch (x: any) { setBusy(undefined); setErr(x?.message ?? "Something went wrong. Please try again."); }
+  };
+
+  const In = ({ k, label, type = "text", ac }: { k: keyof typeof EMPTY; label: string; type?: string; ac?: string }) => (
+    <label className="block text-sm font-medium">{label}<input type={type} autoComplete={ac} className={`${field} mt-1.5`} value={f[k]} onChange={(e) => setF({ ...f, [k]: e.target.value })} /></label>
+  );
+  const Opt = ({ id, icon: Icon, title, sub, disabled }: { id: "online" | "cod"; icon: any; title: string; sub: string; disabled?: boolean }) => (
+    <label className={cn("flex cursor-pointer gap-3 rounded-xl border-2 p-4 transition", method === id ? "border-primary bg-secondary/40" : "border-border", disabled && "cursor-not-allowed opacity-60")}>
+      <input type="radio" name="method" className="mt-1 accent-[var(--primary)]" checked={method === id} disabled={disabled} onChange={() => setMethod(id)} />
+      <Icon className="mt-0.5 size-5 shrink-0 text-primary" />
+      <span><span className="block font-semibold">{title}</span><span className="block text-sm text-muted-foreground">{sub}</span></span>
+    </label>
   );
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
-      <span className="inline-block rounded-full bg-primary px-4 py-1.5 text-xs font-bold tracking-widest text-primary-foreground">DEMO CHECKOUT</span>
+      {cfg && <span className="inline-block rounded-full bg-primary px-4 py-1.5 text-xs font-bold tracking-widest text-primary-foreground">{!onlineReady ? "ONLINE PAYMENT NOT SET UP" : cfg.testMode ? "RAZORPAY TEST MODE" : "SECURE CHECKOUT"}</span>}
       <h1 className="mt-4 text-4xl">Almost there</h1>
-      <p className="mt-2 text-muted-foreground">Sample details are pre-filled. No card details are collected and no payment is processed.</p>
-      <form noValidate onSubmit={submit} className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1fr)_340px]">
-        <div className="grid gap-4 rounded-2xl bg-card p-6 sm:grid-cols-2">
-          {In({ k: "name", label: "Your name" })}
-          {In({ k: "phone", label: "Phone", type: "tel" })}
-          {In({ k: "email", label: "Email", type: "email" })}
-          {In({ k: "recipient", label: "Recipient's name" })}
-          <div className="sm:col-span-2">{In({ k: "address", label: "Delivery address" })}</div>
-          <label className="block text-sm font-medium">City
-            <select className={`${field} mt-1.5`} value={f.city} onChange={(e) => setF({ ...f, city: e.target.value })}>{Object.keys(CITIES).map((c) => <option key={c}>{c}</option>)}</select>
-          </label>
-          {In({ k: "pin", label: "PIN code" })}
-          <div className="rounded-xl border border-dashed border-border p-4 text-sm text-muted-foreground sm:col-span-2">Payment: <b>Demo mode</b> — nothing will be charged.</div>
-          {err && <p role="alert" className="text-sm text-destructive sm:col-span-2">{err}</p>}
+      <p className="mt-2 text-muted-foreground">{cfg?.testMode ? "Test mode: use Razorpay test details — no real money moves and test orders are not real purchases." : "Your payment is handled by Razorpay. Momento never sees your card or UPI details."}</p>
+      <form noValidate onSubmit={submit} className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1fr)_360px]">
+        <div className="space-y-6">
+          <div className="grid gap-4 rounded-2xl bg-card p-6 sm:grid-cols-2">
+            {In({ k: "name", label: "Your name", ac: "name" })}
+            {In({ k: "phone", label: "Phone", type: "tel", ac: "tel" })}
+            {In({ k: "email", label: "Email", type: "email", ac: "email" })}
+            {In({ k: "recipient", label: "Recipient's name (optional)" })}
+            <div className="sm:col-span-2">{In({ k: "address", label: "Delivery address", ac: "street-address" })}</div>
+            <label className="block text-sm font-medium">City
+              <select className={`${field} mt-1.5`} value={f.city} onChange={(e) => setF({ ...f, city: e.target.value })}>{Object.keys(CITIES).map((c) => <option key={c}>{c}</option>)}</select>
+            </label>
+            {In({ k: "pin", label: "PIN code", ac: "postal-code" })}
+          </div>
+          <fieldset className="rounded-2xl bg-card p-6">
+            <legend className="sr-only">Payment method</legend>
+            <p className="eyebrow mb-4">Payment method</p>
+            <div className="grid gap-3">
+              <Opt id="online" icon={Smartphone} title="Pay online — UPI, cards, net banking, wallets" disabled={!onlineReady}
+                sub={onlineReady ? "Choose in the secure Razorpay window. Only methods enabled on our Razorpay account will appear." : "Not set up yet — the store owner needs to add Razorpay keys."} />
+              {cfg?.codEnabled && <Opt id="cod" icon={Banknote} title="Cash on Delivery" sub="Pay when your gift arrives. Your order stays unpaid until cash is collected." />}
+            </div>
+            <p className="mt-4 flex items-start gap-2 text-xs text-muted-foreground"><ShieldCheck className="size-4 shrink-0 text-primary" />Totals are recalculated on our server and every payment is verified before your order is confirmed.</p>
+          </fieldset>
+          {err && <p role="alert" className="rounded-xl bg-destructive/10 px-4 py-3 text-sm text-destructive">{err}</p>}
         </div>
-        <aside className="h-fit rounded-2xl bg-card p-6 shadow-soft">
+        <aside className="h-fit rounded-2xl bg-card p-6 shadow-soft lg:sticky lg:top-24">
+          <ul className="mb-4 space-y-2 border-b border-border pb-4 text-sm">
+            {cart.map((i) => { const p = getProduct(i.productId); return p && (
+              <li key={i.key} className="flex justify-between gap-3"><span className="min-w-0">{p.name} × {i.qty}{i.personalisation && <span className="block text-xs text-primary">Personalised</span>}</span><span className="tabular-nums">{inr(p.price * i.qty)}</span></li>
+            ); })}
+          </ul>
           <dl className="space-y-2 text-sm">
             <div className="flex justify-between"><dt>Subtotal</dt><dd>{inr(subtotal)}</dd></div>
-            <div className="flex justify-between"><dt>Demo delivery fee</dt><dd>{inr(DELIVERY_FEE)}</dd></div>
+            <div className="flex justify-between"><dt>Delivery</dt><dd>{inr(DELIVERY_FEE)}</dd></div>
             <div className="flex justify-between border-t border-border pt-3 text-base font-semibold"><dt>Total</dt><dd>{inr(total)}</dd></div>
           </dl>
-          <button className="mt-6 h-12 w-full rounded-full bg-primary font-semibold text-primary-foreground">Confirm demo order</button>
+          <button disabled={!!busy || !cfg} className="mt-6 inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-primary font-semibold text-primary-foreground disabled:opacity-70">
+            {busy ? <><Loader2 className="size-4 animate-spin" />{busy}</> : method === "cod" ? "Place COD order" : `Pay ${inr(total)}`}
+          </button>
         </aside>
       </form>
     </div>
