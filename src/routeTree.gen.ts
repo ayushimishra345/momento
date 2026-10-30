@@ -23,6 +23,7 @@ import { Route as PersonaliseRouteImport } from './routes/personalise'
 import { Route as RemindersRouteImport } from './routes/reminders'
 import { Route as ShopRouteImport } from './routes/shop'
 import { Route as WishlistRouteImport } from './routes/wishlist'
+import { Route as OrderReferenceRouteImport } from './routes/order.$reference'
 import { Route as ProductIdRouteImport } from './routes/product.$id'
 import { Route as ApiPublicRazorpayWebhookRouteImport } from './routes/api/public/razorpay-webhook'
 
@@ -96,6 +97,11 @@ const WishlistRoute = WishlistRouteImport.update({
   path: '/wishlist',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OrderReferenceRoute = OrderReferenceRouteImport.update({
+  id: '/order/$reference',
+  path: '/order/$reference',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProductIdRoute = ProductIdRouteImport.update({
   id: '/product/$id',
   path: '/product/$id',
@@ -123,6 +129,7 @@ export interface FileRoutesByFullPath {
   '/reminders': typeof RemindersRoute
   '/shop': typeof ShopRoute
   '/wishlist': typeof WishlistRoute
+  '/order/$reference': typeof OrderReferenceRoute
   '/product/$id': typeof ProductIdRoute
   '/api/public/razorpay-webhook': typeof ApiPublicRazorpayWebhookRoute
 }
@@ -141,6 +148,7 @@ export interface FileRoutesByTo {
   '/reminders': typeof RemindersRoute
   '/shop': typeof ShopRoute
   '/wishlist': typeof WishlistRoute
+  '/order/$reference': typeof OrderReferenceRoute
   '/product/$id': typeof ProductIdRoute
   '/api/public/razorpay-webhook': typeof ApiPublicRazorpayWebhookRoute
 }
@@ -160,6 +168,7 @@ export interface FileRoutesById {
   '/reminders': typeof RemindersRoute
   '/shop': typeof ShopRoute
   '/wishlist': typeof WishlistRoute
+  '/order/$reference': typeof OrderReferenceRoute
   '/product/$id': typeof ProductIdRoute
   '/api/public/razorpay-webhook': typeof ApiPublicRazorpayWebhookRoute
 }
@@ -180,6 +189,7 @@ export interface FileRouteTypes {
     | '/reminders'
     | '/shop'
     | '/wishlist'
+    | '/order/$reference'
     | '/product/$id'
     | '/api/public/razorpay-webhook'
   fileRoutesByTo: FileRoutesByTo
@@ -198,6 +208,7 @@ export interface FileRouteTypes {
     | '/reminders'
     | '/shop'
     | '/wishlist'
+    | '/order/$reference'
     | '/product/$id'
     | '/api/public/razorpay-webhook'
   id:
@@ -216,6 +227,7 @@ export interface FileRouteTypes {
     | '/reminders'
     | '/shop'
     | '/wishlist'
+    | '/order/$reference'
     | '/product/$id'
     | '/api/public/razorpay-webhook'
   fileRoutesById: FileRoutesById
@@ -235,6 +247,7 @@ export interface RootRouteChildren {
   RemindersRoute: typeof RemindersRoute
   ShopRoute: typeof ShopRoute
   WishlistRoute: typeof WishlistRoute
+  OrderReferenceRoute: typeof OrderReferenceRoute
   ProductIdRoute: typeof ProductIdRoute
   ApiPublicRazorpayWebhookRoute: typeof ApiPublicRazorpayWebhookRoute
 }
@@ -339,6 +352,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WishlistRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/order/$reference': {
+      id: '/order/$reference'
+      path: '/order/$reference'
+      fullPath: '/order/$reference'
+      preLoaderRoute: typeof OrderReferenceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/product/$id': {
       id: '/product/$id'
       path: '/product/$id'
@@ -371,6 +391,7 @@ const rootRouteChildren: RootRouteChildren = {
   RemindersRoute: RemindersRoute,
   ShopRoute: ShopRoute,
   WishlistRoute: WishlistRoute,
+  OrderReferenceRoute: OrderReferenceRoute,
   ProductIdRoute: ProductIdRoute,
   ApiPublicRazorpayWebhookRoute: ApiPublicRazorpayWebhookRoute,
 }
