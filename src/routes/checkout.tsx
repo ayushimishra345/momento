@@ -59,6 +59,7 @@ function Checkout() {
     if (!/^\d{6}$/.test(f.pin.trim())) return "Please enter a 6-digit PIN code.";
     if (method === "online" && !onlineReady) return "Online payment isn't set up yet. Choose Cash on Delivery.";
     if (method === "cod" && !cfg?.codEnabled) return "Cash on Delivery isn't available.";
+    return undefined;
   };
 
   const submit = async (e: React.FormEvent) => {
